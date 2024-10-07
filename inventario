@@ -1,0 +1,29 @@
+try {
+  // Seleciona a primeira ocorrência da classe css-12fezvd
+  let firstContainer = document.querySelector('.css-12fezvd');
+
+  if (firstContainer) {
+    // Seleciona todos os itens dentro da primeira ocorrência da classe css-9dfuck
+    let items = firstContainer.querySelectorAll('.css-9dfuck h2.chakra-heading.css-bvafip');
+
+    // Cria uma string para ser facilmente copiada para o Excel (separada por linhas)
+    let result = "";
+    items.forEach(item => {
+      result += item.innerText + "\n";
+    });
+
+    // Cria um elemento de texto temporário para facilitar a cópia
+    const tempTextArea = document.createElement("textarea");
+    tempTextArea.value = result;
+    document.body.appendChild(tempTextArea);
+    tempTextArea.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempTextArea);
+
+    console.log("Texto copiado para a área de transferência. Você pode agora colar no Excel.");
+  } else {
+    console.error("Container com a classe 'css-12fezvd' não encontrado.");
+  }
+} catch (error) {
+  console.error("Ocorreu um erro: ", error);
+}
