@@ -1,28 +1,51 @@
 try {
-  // Seleciona a primeira ocorrência da classe css-12fezvd
-  let firstContainer = document.querySelector('.css-12fezvd');
+  // Seleciona todas as ocorrências da classe css-12fezvd
+  let allContainers = document.querySelectorAll('.css-12fezvd');
 
-  if (firstContainer) {
-    // Seleciona todos os itens dentro da primeira ocorrência da classe css-9dfuck
-    let items = firstContainer.querySelectorAll('.css-9dfuck h2.chakra-heading.css-bvafip');
+  // Cria uma string para ser facilmente copiada para o Excel (separada por linhas)
+  let result = "";
 
-    // Cria uma string para ser facilmente copiada para o Excel (separada por linhas)
-    let result = "";
+  // Itera sobre cada container encontrado
+  allContainers.forEach(container => {
+    // Seleciona todos os itens dentro de cada container da classe css-9dfuck
+    let items = container.querySelectorAll('.css-9dfuck');
+
     items.forEach(item => {
-      result += item.innerText + "\n";
-    });
+      // Seleciona o nome do item (h2 com a classe chakra-heading css-bvafip)
+      let name = item.querySelector('h2.chakra-heading.css-bvafip');
+      // Seleciona a raridade do item (span com a classe chakra-text css-8gowp2)
+      let rarity = item.querySelector('span.chakra-text.css-8gowp2');
 
+      // Se ambos nome e raridade forem encontrados, adiciona ao resultado
+      if (name && rarity) {
+        result += `${name.innerText}\t${rarity.innerText}\n`; // Usa "\t" para separação de colunas no Excel
+      }
+    });
+  });
+
+  if (result) {
     // Cria um elemento de texto temporário para facilitar a cópia
     const tempTextArea = document.createElement("textarea");
     tempTextArea.value = result;
     document.body.appendChild(tempTextArea);
     tempTextArea.select();
-    document.execCommand("copy");
-    document.body.removeChild(tempTextArea);
 
-    console.log("Texto copiado para a área de transferência. Você pode agora colar no Excel.");
+    try {
+      // Tenta copiar para a área de transferência
+      if (document.execCommand("copy")) {
+        console.log("Texto copiado para a área de transferência. Você pode agora colar no Excel.");
+      } else {
+        throw new Error("Falha ao usar execCommand");
+      }
+    } catch (err) {
+      console.warn("Não foi possível copiar automaticamente. O texto está sendo exibido no console para cópia manual.");
+      console.log(result);
+    }
+
+    // Remove o textarea temporário
+    document.body.removeChild(tempTextArea);
   } else {
-    console.error("Container com a classe 'css-12fezvd' não encontrado.");
+    console.warn("Nenhum item encontrado.");
   }
 } catch (error) {
   console.error("Ocorreu um erro: ", error);
