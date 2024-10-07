@@ -1,0 +1,64 @@
+// Função para descer a página e clicar no botão "Show More"
+async function loadAllItems() {
+    while (true) {
+        // Tenta encontrar o botão "Show More"
+        let showMoreButton = document.querySelector('button[aria-label="Show more"]');
+        
+        // Se o botão não estiver mais presente, para o loop
+        if (!showMoreButton) {
+            break;
+        }
+
+        // Rola a página para o botão e clica
+        showMoreButton.scrollIntoView();
+        await new Promise(resolve => setTimeout(resolve, 500)); // Aguarda meio segundo para evitar problemas de carregamento
+        showMoreButton.click();
+
+        // Espera um pouco para carregar os novos itens
+        await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+
+    // Depois que todos os itens foram carregados, coleta as informações dos itens
+    collectItemsData();
+}
+
+// Função para coletar os dados dos itens
+function collectItemsData() {
+    // Seleciona todos os itens que possuem a classe "chakra-linkbox css-10n1vic"
+    let items = document.querySelectorAll('.chakra-linkbox.css-10n1vic');
+
+    // Inicializa uma string para armazenar os resultados
+    let result = '';
+
+    // Percorre cada item e coleta as informações
+    items.forEach(item => {
+        // Nome do item
+        let name = item.querySelector('.chakra-heading.css-m8b7z0').innerText.trim();
+
+        // Raridade do item
+        let rarity = item.querySelector('.chakra-text.css-8gowp2').innerText.trim();
+
+        // Valor do item
+        let price = item.querySelector('.chakra-text.css-29nllk').innerText.trim();
+
+        // Concatena as informações numa linha, separadas por tabulações (\t)
+        result += `${name}\t${price}\t${rarity}\n`;
+    });
+
+    // Copia o resultado para a área de transferência
+    copyToClipboard(result);
+    console.log("Dados copiados para a área de transferência. Cole no Excel!");
+}
+
+// Função para copiar para a área de transferência
+function copyToClipboard(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+}
+
+// Executa a função para carregar todos os itens e depois coletar os dados
+loadAllItems();
