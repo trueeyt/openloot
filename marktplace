@@ -41,6 +41,13 @@ function collectItemsData() {
         // Valor do item
         let price = item.querySelector('.chakra-text.css-29nllk').innerText.trim();
 
+        // Limpa o valor, removendo símbolos de moeda e espaços desnecessários
+        price = price.replace(/[^0-9.,]/g, '').trim(); // Remove todos os caracteres que não sejam números, ponto ou vírgula
+
+        // Substitui . por , e , por .
+        price = price.replace('.', ','); // Troca o ponto decimal por vírgula
+        price = price.replace(/,/g, '.'); // Troca a vírgula por ponto para os separadores de milhar
+
         // Concatena as informações numa linha, separadas por tabulações (\t)
         result += `${name}\t${price}\t${rarity}\n`;
     });
