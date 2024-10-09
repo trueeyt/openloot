@@ -1,61 +1,49 @@
-try {
-  // Seleciona todas as ocorrências da classe css-12fezvd
-  let allContainers = document.querySelectorAll('.css-12fezvd');
+// Função para simular o clique no botão "Show More"
+function clickShowMore() {
+    let buttons = document.querySelectorAll('button'); // Seleciona todos os botões
+    let showMoreButton = Array.from(buttons).find(button => button.innerText.includes('Show more')); // Encontra o botão com o texto "Show more"
 
-  // Cria uma string para ser facilmente copiada para o Excel (separada por linhas)
-  let result = "";
-  let totalItemCount = 0; // Contador total de itens
+    if (showMoreButton) {
+        showMoreButton.click();
+        setTimeout(clickShowMore, 1000); // Espera 1 segundo e tenta clicar novamente, se houver mais itens para carregar
+    } else {
+        collectItems(); // Se não houver mais o botão, coleta os itens
+    }
+}
 
-  // Itera sobre cada container encontrado
-  allContainers.forEach((container, index) => {
-    let containerItemCount = 0; // Contador de itens de cada container específico
+// Função para coletar os itens de nome e raridade
+function collectItems() {
+    // Seleciona todos os itens com a classe 'css-9dfuck'
+    let items = document.querySelectorAll('.css-9dfuck'); 
 
-    console.log(`Processando container ${index + 1} de ${allContainers.length}`);
-
-    // Seleciona todos os itens dentro de cada container da classe css-9dfuck
-    let items = container.querySelectorAll('.css-9dfuck');
-
-    items.forEach(item => {
-      // Adiciona o texto interno do item ao resultado (ou modifique isso para capturar subelementos)
-      result += `${item.innerText}\n`; // Usa "\n" para separação por linhas
-      containerItemCount++; // Incrementa o contador de itens para este container
-      totalItemCount++; // Incrementa o contador total de itens
-    });
-
-    // Exibe o número de itens coletados para a aba atual
-    console.log(`Aba ${index + 1}: ${containerItemCount} itens coletados.`);
-    
-    // Adiciona uma linha indicando o número de itens coletados dessa aba no resultado
-    result += `Aba ${index + 1}: ${containerItemCount} itens coletados.\n`;
-  });
-
-  if (result) {
-    // Exibe o número total de itens copiados
-    console.log(`${totalItemCount} itens copiados no total.`);
-
-    // Cria um elemento de texto temporário para facilitar a cópia
-    const tempTextArea = document.createElement("textarea");
-    tempTextArea.value = result;
-    document.body.appendChild(tempTextArea);
-    tempTextArea.select();
-
-    try {
-      // Tenta copiar para a área de transferência
-      if (document.execCommand("copy")) {
-        console.log("Texto copiado para a área de transferência. Você pode agora colar no Excel.");
-      } else {
-        throw new Error("Falha ao usar execCommand");
-      }
-    } catch (err) {
-      console.warn("Não foi possível copiar automaticamente. O texto está sendo exibido no console para cópia manual.");
-      console.log(result);
+    function extractItems(items) {
+        let result = [];
+        items.forEach(item => {
+            let name = item.querySelector('h2') ? item.querySelector('h2').innerText : 'No name';
+            let rarity = item.querySelector('.chakra-text.css-8gowp2') ? item.querySelector('.chakra-text.css-8gowp2').innerText : 'No rarity info';
+            result.push(`${name}\t${rarity}`); // Tabulação entre nome e raridade para colar no Excel
+        });
+        return result;
     }
 
-    // Remove o textarea temporário
-    document.body.removeChild(tempTextArea);
-  } else {
-    console.warn("Nenhum item encontrado.");
-  }
-} catch (error) {
-  console.error("Ocorreu um erro: ", error);
+    // Extrair os itens da classe css-9dfuck
+    let itemsList = extractItems(items);
+
+    // Copiar para a área de transferência
+    let itemsText = itemsList.join('\n');
+    copyToClipboard(itemsText);
+    console.log("Itens copiados para a área de transferência.");
 }
+
+// Função para copiar para a área de transferência
+function copyToClipboard(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+}
+
+// Iniciar o processo clicando no botão "Show More" até carregar tudo
+clickShowMore();
