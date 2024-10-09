@@ -4,26 +4,35 @@ try {
 
   // Cria uma string para ser facilmente copiada para o Excel (separada por linhas)
   let result = "";
+  let totalItemCount = 0; // Contador total de itens
 
   // Itera sobre cada container encontrado
-  allContainers.forEach(container => {
+  allContainers.forEach((container, index) => {
+    let containerItemCount = 0; // Contador de itens de cada container específico
+
+    console.log(`Processando container ${index + 1} de ${allContainers.length}`);
+
     // Seleciona todos os itens dentro de cada container da classe css-9dfuck
     let items = container.querySelectorAll('.css-9dfuck');
 
     items.forEach(item => {
-      // Seleciona o nome do item (h2 com a classe chakra-heading css-bvafip)
-      let name = item.querySelector('h2.chakra-heading.css-bvafip');
-      // Seleciona a raridade do item (span com a classe chakra-text css-8gowp2)
-      let rarity = item.querySelector('span.chakra-text.css-8gowp2');
-
-      // Se ambos nome e raridade forem encontrados, adiciona ao resultado
-      if (name && rarity) {
-        result += `${name.innerText}\t${rarity.innerText}\n`; // Usa "\t" para separação de colunas no Excel
-      }
+      // Adiciona o texto interno do item ao resultado (ou modifique isso para capturar subelementos)
+      result += `${item.innerText}\n`; // Usa "\n" para separação por linhas
+      containerItemCount++; // Incrementa o contador de itens para este container
+      totalItemCount++; // Incrementa o contador total de itens
     });
+
+    // Exibe o número de itens coletados para a aba atual
+    console.log(`Aba ${index + 1}: ${containerItemCount} itens coletados.`);
+    
+    // Adiciona uma linha indicando o número de itens coletados dessa aba no resultado
+    result += `Aba ${index + 1}: ${containerItemCount} itens coletados.\n`;
   });
 
   if (result) {
+    // Exibe o número total de itens copiados
+    console.log(`${totalItemCount} itens copiados no total.`);
+
     // Cria um elemento de texto temporário para facilitar a cópia
     const tempTextArea = document.createElement("textarea");
     tempTextArea.value = result;
