@@ -1,0 +1,35 @@
+// Seleciona todos os elementos com a classe "loc-collection-item w-dyn-item"
+const items = document.querySelectorAll('.loc-collection-item.w-dyn-item');
+
+// Cria um array para armazenar os dados extraídos (nome e número)
+const data = [];
+
+// Itera pelos primeiros 100 itens
+for (let i = 0; i < Math.min(100, items.length); i++) {
+    const item = items[i];
+    const nameElement = item.querySelector('.l-col-block .l-col-text'); // Nome
+    const numberElement = item.querySelector('.l-col-text.bold'); // Número
+
+    if (nameElement && numberElement) {
+        // Adiciona o nome e número à lista de dados
+        data.push([nameElement.textContent.trim(), numberElement.textContent.trim()]);
+    }
+}
+
+// Formata os dados como um texto no formato CSV (Excel) com tabulação para separar as colunas
+const csvContent = data.map(row => row.join('\t')).join('\n');
+
+// Cria um textarea temporário para copiar os dados para a área de transferência
+const tempTextArea = document.createElement('textarea');
+tempTextArea.value = csvContent;
+document.body.appendChild(tempTextArea);
+
+// Seleciona o conteúdo e copia para a área de transferência
+tempTextArea.select();
+document.execCommand('copy');
+
+// Remove o textarea temporário
+document.body.removeChild(tempTextArea);
+
+// Exibe uma mensagem de confirmação
+console.log('100 primeiros nomes e números copiados para a área de transferência!');
