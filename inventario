@@ -1,41 +1,41 @@
-// Função para simular o clique no botão "Show More"
+// Função para simular o clique no botão "Show More" até que todos os itens sejam carregados
 function clickShowMore() {
-    let buttons = document.querySelectorAll('button'); // Seleciona todos os botões
-    let showMoreButton = Array.from(buttons).find(button => button.innerText.includes('Show more')); // Encontra o botão com o texto "Show more"
+    let buttons = document.querySelectorAll('button'); // Seleciona todos os botões na página
+    let showMoreButton = Array.from(buttons).find(button => button.innerText.includes('Show more')); // Encontra o botão "Show more"
 
     if (showMoreButton) {
-        showMoreButton.click();
-        setTimeout(clickShowMore, 1000); // Espera 1 segundo e tenta clicar novamente, se houver mais itens para carregar
+        showMoreButton.click();  // Clica no botão para carregar mais itens
+        setTimeout(clickShowMore, 1000);  // Tenta novamente após 1 segundo
     } else {
-        collectItems(); // Se não houver mais o botão, coleta os itens
+        collectItems();  // Quando não houver mais o botão "Show more", coleta os itens
     }
 }
 
-// Função para coletar os itens de nome e raridade
+// Função para coletar os itens com nome e raridade
 function collectItems() {
-    // Seleciona todos os itens com a classe 'css-9dfuck'
-    let items = document.querySelectorAll('.css-9dfuck'); 
+    let items = document.querySelectorAll('.css-9dfuck');  // Seletor para pegar cada item
+    let itemList = [];
 
-    function extractItems(items) {
-        let result = [];
-        items.forEach(item => {
-            let name = item.querySelector('h2') ? item.querySelector('h2').innerText : 'No name';
-            let rarity = item.querySelector('.chakra-text.css-8gowp2') ? item.querySelector('.chakra-text.css-8gowp2').innerText : 'No rarity info';
-            result.push(`${name}\t${rarity}`); // Tabulação entre nome e raridade para colar no Excel
-        });
-        return result;
-    }
+    items.forEach(item => {
+        // Captura o nome do item
+        let nameElement = item.querySelector('h2');
+        let name = nameElement ? nameElement.innerText : 'Nome não encontrado';
 
-    // Extrair os itens da classe css-9dfuck
-    let itemsList = extractItems(items);
+        // Captura a raridade, agora ajustando o seletor para a classe correta
+        let rarityElement = item.querySelector('.chakra-text.css-9zqeo9');
+        let rarity = rarityElement ? rarityElement.innerText : 'Raridade não encontrada';
 
-    // Copiar para a área de transferência
-    let itemsText = itemsList.join('\n');
+        // Adiciona o nome e raridade ao array
+        itemList.push(`${name}\t${rarity}`);
+    });
+
+    // Copia o resultado para a área de transferência
+    let itemsText = itemList.join('\n');
     copyToClipboard(itemsText);
-    console.log("Itens copiados para a área de transferência.");
+    console.log("Itens e raridades copiados para a área de transferência.");
 }
 
-// Função para copiar para a área de transferência
+// Função para copiar o texto para a área de transferência
 function copyToClipboard(text) {
     const textarea = document.createElement('textarea');
     textarea.value = text;
@@ -45,5 +45,5 @@ function copyToClipboard(text) {
     document.body.removeChild(textarea);
 }
 
-// Iniciar o processo clicando no botão "Show More" até carregar tudo
+// Inicia o processo de clicar em "Show more"
 clickShowMore();
