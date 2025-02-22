@@ -1,0 +1,36 @@
+// Pega todos os elementos com a classe 'css-9dfuck' (onde as NFTs estão contidas)
+const nftContainers = document.querySelectorAll('.css-9dfuck');
+
+// Itera sobre cada elemento
+nftContainers.forEach(container => {
+    // Pega o link de cada NFT dentro da classe 'css-w8ydub'
+    const linkElement = container.querySelector('.css-w8ydub');
+    if (linkElement) {
+        const href = linkElement.getAttribute('href');
+        
+        // Cria o botão dentro do frame da NFT
+        const button = document.createElement('button');
+        button.textContent = 'Abrir NFT';
+        
+        // Estilo do botão: cor vermelha e com contorno
+        button.style.backgroundColor = 'red';
+        button.style.color = 'white';
+        button.style.border = '2px solid white';
+        button.style.padding = '8px 16px';
+        button.style.borderRadius = '5px';
+        button.style.cursor = 'pointer';
+        button.style.marginTop = '10px'; // Estilo para o botão não colidir com outros elementos
+        button.style.fontSize = '14px';
+
+        // Adiciona um evento para abrir o link em uma nova aba ao clicar no botão
+        button.addEventListener('click', () => {
+            window.open('https://openloot.com' + href, '_blank');
+        });
+
+        // Adiciona o botão dentro da div com a classe 'css-196gm5d' (o frame da NFT)
+        const nftFrame = container.querySelector('.css-196gm5d');
+        if (nftFrame) {
+            nftFrame.appendChild(button);
+        }
+    }
+});
