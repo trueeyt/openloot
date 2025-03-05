@@ -6,12 +6,22 @@
 
     // Função para clicar no botão "Show More" até que ele desapareça
     async function loadAllItems() {
-        let showMoreButton = document.querySelector('.chakra-button.css-d33evg'); // Seleciona o botão "Show More"
-        
-        while (showMoreButton) {
-            showMoreButton.click(); // Clica no botão
-            await delay(2000); // Aguarda 2 segundos para carregar mais itens
-            showMoreButton = document.querySelector('.chakra-button.css-d33evg'); // Verifica novamente se o botão ainda está presente
+        let showMoreButton;
+
+        // Continuar tentando até que o botão desapareça
+        while (true) {
+            showMoreButton = document.querySelector('.chakra-button.css-1yovtmp'); // Atualizado com a nova classe do botão "Show More"
+            
+            // Se o botão não estiver visível ou não existir, saímos
+            if (!showMoreButton || !showMoreButton.offsetParent) {
+                console.log('Botão "Show More" não encontrado ou não está visível.');
+                break;
+            }
+
+            // Clica no botão se encontrado
+            showMoreButton.click();
+            console.log('Clicando no botão "Show More"...');
+            await delay(4000); // Aguarda 4 segundos para carregar mais itens
         }
     }
 
@@ -24,13 +34,8 @@
 
     // Função para formatar os preços no formato correto (milhar com ponto, decimal com vírgula)
     function formatPrice(price) {
-        // Remove qualquer caractere que não seja número ou ponto
-        let numericPrice = price.replace(/[^0-9.]/g, '');
-
-        // Converter para float para tratar o valor numericamente
-        let floatPrice = parseFloat(numericPrice);
-
-        // Formatar o valor: ponto para milhar, vírgula para decimal
+        let numericPrice = price.replace(/[^0-9.]/g, ''); // Remove qualquer caractere que não seja número ou ponto
+        let floatPrice = parseFloat(numericPrice); // Converte para número
         return floatPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
@@ -41,9 +46,9 @@
 
     // Percorrer cada item para extrair os dados
     itemElements.forEach(itemElement => {
-        const itemName = itemElement.querySelector('h2').innerText; // Nome do item
-        const rarity = itemElement.querySelector('.css-8gowp2').innerText; // Raridade do item
-        const priceElement = itemElement.querySelector('.css-29nllk'); // Preço do item
+        const itemName = itemElement.querySelector('h2.chakra-heading').innerText; // Nome do item
+        const rarity = itemElement.querySelector('.chakra-text.css-9zqeo9').innerText; // Raridade do item
+        const priceElement = itemElement.querySelector('.chakra-text.css-j6dla4'); // Preço do item
         let price = priceElement ? priceElement.innerText.replace('$', '') : 'N/A'; // Remove o símbolo $ e pega o valor
 
         price = formatPrice(price); // Formata o preço corretamente
